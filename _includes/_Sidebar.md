@@ -63,9 +63,9 @@
   - [secretstore](JSONRPC-secretstore-module)
 
 ### Parity 链
-- [Chain Specification链规范](Chain-specification)
-  - [Pluggable Consensus 可插拔的共识](Pluggable-Consensus)
-    - [Aura 权威共识](Aura)
+- [Chain Specification](Chain-specification)
+  - [Pluggable Consensus](Pluggable-Consensus)
+    - [Aura](Aura)
   - [Validator Set](Validator-Set)
     - [Validator contracts](Validator-contracts)
 - [Permissioning](Permissioning)
