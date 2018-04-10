@@ -1,42 +1,41 @@
 # Aura: Authority Round
 
-Aura _(Authority Round)_ is one of the Blockchain consensus algorithms available in Parity.
+Aura _(Authority Round)_ 是Parity支持的一个区块链共识算法。
 
-Parameters:
-  - _n_, the number of nodes
-  - _f_, the number of faulty nodes
-  - _t_, the step duration in seconds
+参数:
+  - _n_, 节点数
+  - _f_, 故障节点数
+  - _t_, 生成区块时间秒数(the step duration in seconds)
 
-**Description**:
+**描述**:
 
-Time is divided into discrete steps of duration `t`, determined by `UNIX time / t`. At each step `s`, a _primary_ will be assigned. Only the primary at a step may issue a block. It is misbehavior to produce more than one block per step or to produce a block out of turn.
+时间被分割成持续时间`t`的离散步骤, 由`UNIX time / t`决定。在每一个步骤`s`, 一个权威候选人会被指定。只有每一步的权威候选人才有可能处理一个区块。每一步产生多个区块或者轮流产生一个区块都是错误的行为。
 
-The primary for a step `s` is the node with index `s % n`.
+步骤`s`的权威候选人是一个由`s % n`代表的的节点。
 
-The protocol contains a chain scoring rule `SCORE(C)`
+该协议包含一个`SCORE(C)`的链评分规则。
 
-On each step, each honest node will propagate the chain with the highest score it knows about to all other nodes. Honest primaries will only issue blocks on top of the best chain they are aware of during their turn.
+在每一步，每一个诚实的节点使用它所了解的最高的分数向其他所有的节点传播链。诚实的权威候选人仅会在他们了解的最好的链上处理区块。
 
-**Finality**
+**最终**
 
-Under the assumption of a synchronous network which propagates messages within the step duration `t`,
+假设在这个步骤持续时间`t`内传播消息的一个同步网络,
 
 `Let SIG_SET(Blocks) be the set of all authors of the blocks in Blocks`
 
-If there is a valid chain C ending with `C[K..]`, where `|SIG_SET(C[K..])| > n/2`,
-then `C[K]` and all of its ancestors are finalized.
+如果有一个以`C[K..]`结尾的有效链C，`|SIG_SET(C[K..])| > n/2`，那么`C[K]` 和它所有祖先都已最终完成。
 
-This definition of finality stems from a simple majority vote. In this setting, `2f + 1 <= n`, so the faulty nodes cannot finalize a block all on their own.
+这种最终定义源于一个简单的多数投票机制。在这种设定下, `2f + 1 <= n`, 所以故障节点不能自行完成一个区块。
 
-**Node Configuration:**
+**节点配置:**
 
-This consensus requires a [`ValidatorSet`](Validator-Set.md) to be specified, which determines the list of `n_v` blockchain addresses at each height `h` which participate in the consensus.
+该共识需要一个[`ValidatorSet`](Validator-Set.md)被指定, 它决定在每个高度`h`参与共识的`n_v`区块链地址列表。
 
-A node can represent a validator when it is ran with `--engine-signer VALIDATOR-ADDRESS`.
+当一个节点使用`--engine-signer VALIDATOR-ADDRESS`运行时，这个节点就可以代表一个权威节点。
 
-The consensus can be run with `--force-sealing` which ensures that blocks are produced even if there are no transactions. This is necessary for blocks to reach finality in a timely fashion.
+该共识可以通过使用`--force-sealing`运行来确保即使没有交易也会产生区块。 为了及时达到最终效果，这时必须的。
 
-**Wishlist:**
+**愿望清单:**
 
-- Apply step backoff after skipping primaries, not before. Exponential backoff may allow for weakly synchronous network without failure.
-- Faster finality by broadcasting signed `GOOD(Hash)` messages where Hash is a block hash of a block with number multiple of some epoch length. `GOOD` messages can be included in the seal.
+- 在跳过权威候选之后回退，而不是之前。无故障的弱同步网络可能允许指数回退。
+- 通过广播签名的 `GOOD(Hash)`消息来加速最终确认，其中Hash是一个具有某个时期长度倍数的区块的区块hash。`GOOD` 消息被包含在戳（seal）中。
