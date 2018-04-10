@@ -64,9 +64,7 @@
 
 ### Parity 链
 - [链规范](Chain-specification)
-
   - [可插拔的共识](Pluggable-Consensus)
-  
     - [Aura权威共识](Aura)
   - [Validator Set](Validator-Set)
     - [Validator contracts](Validator-contracts)
